@@ -41,11 +41,16 @@ int queue_dequeue(queue_t queue, void **data)
 {
 	if (queue == NULL || queue->q[queue->first] == NULL)
 		return -1;
-	else{
-		*data = queue->q[queue->first];
-		free(queue->q[queue->first]);
-		queue->first++;
+	*data = queue->q[queue->first];
+	queue->q[queue->first] = NULL;
+	queue->first++;
+	if(queue->first == queue->counter){
+		queue->counter = 0;
 	}
+	
+	
+	
+		
 	return 0;
 }
 
@@ -80,6 +85,4 @@ int queue_length(queue_t queue)
 
 	return queue->counter;
 	
-
 }
-
