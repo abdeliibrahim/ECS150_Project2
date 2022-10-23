@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <queue.h>
 
 #define TEST_ASSERT(assert)				\
@@ -15,33 +14,28 @@ do {									\
 	}									\
 } while(0)
 
-/* Create */
+
 void test_create(void)
 {
 	fprintf(stderr, "*** TEST create ***\n");
-
 	TEST_ASSERT(queue_create() != NULL);
 }
 
-/* Enqueue/Dequeue simple */
-void test_queue_simple(void)
+/* Enqueue simple */
+void  enqueue_simple(queue_t queue, void *data)
 {
-	int data = 3, *ptr;
-	queue_t q;
+    int res = queue_enqueue(queue, data);
 
-	fprintf(stderr, "*** TEST queue_simple ***\n");
 
-	q = queue_create();
-	queue_enqueue(q, &data);
-	queue_dequeue(q, (void**)&ptr);
-	TEST_ASSERT(ptr == &data);
 }
 
 int main(void)
 {
-	test_create();
-	test_queue_simple();
-
-
+	queue_t q;
+    q = queue_create();
+    for (int i =0; i< 10; i++){
+        enqueue_simple(q, &i);
+        printf("element %d in q: %s");
+    }
 	return 0;
 }
