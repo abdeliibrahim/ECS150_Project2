@@ -6,20 +6,19 @@
 #include <assert.h>
 #include <stdio.h>
 
-
-struct node {
-	void* val;
-	struct node* next;
+struct node
+{
+	void *val;
+	struct node *next;
 };
-struct queue {
-		struct node *head;
-		struct node *tail;
+struct queue
+{
+	struct node *head;
+	struct node *tail;
 	struct node *cur;
 	struct node *prev;
-		int count;
-
+	int count;
 };
-
 
 queue_t queue_create(void)
 {
@@ -34,26 +33,28 @@ int queue_destroy(queue_t queue)
 {
 	if (queue->head == NULL || queue->count != 0)
 		return (-1);
-	else{
-		free(&queue);  // maybe get rid of &
+	else
+	{
+		free(&queue); // maybe get rid of &
 	}
-	return(0);
-	
+	return (0);
 }
 
 int queue_enqueue(queue_t queue, void *data)
 {
-	if(data == NULL || queue == NULL || queue->count == sizeof(struct queue)) 
+	if (data == NULL || queue == NULL || queue->count == sizeof(struct queue))
 		return -1;
-	
-	struct node* newNode = malloc(sizeof(struct node));
-	newNode->val = data;
-	newNode->next= NULL;
 
-	if (queue->head == NULL) {
-		queue->head = queue->tail= newNode;
+	struct node *newNode = malloc(sizeof(struct node));
+	newNode->val = data;
+	newNode->next = NULL;
+
+	if (queue->head == NULL)
+	{
+		queue->head = queue->tail = newNode;
 	}
-	else if (queue->head != NULL) {
+	else if (queue->head != NULL)
+	{
 		queue->tail->next = newNode;
 		queue->tail = newNode;
 	}
@@ -61,27 +62,27 @@ int queue_enqueue(queue_t queue, void *data)
 	return 0;
 }
 
-int queue_dequeue(queue_t queue, void **data) // ptr= null 
+int queue_dequeue(queue_t queue, void **data) // ptr= null
 {
 	if (queue == NULL || data == NULL)
 		return -1;
-	data = &(queue->head->val); 
 	struct node *decapitated = NULL;
 	decapitated = queue->head;
+	*data = (decapitated->val);
+
 	queue->head = queue->head->next;
 	queue->count--;
-	if (queue->head == NULL) {
+	if (queue->head == NULL)
+	{
 		queue->tail = NULL;
 	}
 	free(decapitated);
-	
-	
-		
+
 	return 0;
 }
 /*
 
-int queue_delete(queue_t queue, void *data) 
+int queue_delete(queue_t queue, void *data)
 {
 	if(queue == NULL || data == NULL)
 		return -1;
@@ -90,7 +91,7 @@ int queue_delete(queue_t queue, void *data)
 		if(queue->q[i] == data){
 			temp = i;
 			break;
-		}		
+		}
 	}
 	while(temp< queue->counter){
 		queue->q[temp] = queue->q[temp+1];
@@ -102,7 +103,7 @@ int queue_iterate(queue_t queue, queue_func_t func){
 	if(queue == NULL || func == NULL)
 		return -1;
 	return 0;
-	
+
 }
 
 int queue_length(queue_t queue)
@@ -111,27 +112,28 @@ int queue_length(queue_t queue)
 		return -1;
 
 	return queue->count;
-	
+
 
 }*/
-
 
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
-#define TEST_ASSERT(assert)				\
-do {									\
-	printf("ASSERT: " #assert " ... ");	\
-	if (assert) {						\
-		printf("PASS\n");				\
-	} else	{							\
-		printf("FAIL\n");				\
-		exit(1);						\
-	}									\
-} while(0)
+#define TEST_ASSERT(assert)                 \
+	do                                      \
+	{                                       \
+		printf("ASSERT: " #assert " ... "); \
+		if (assert)                         \
+		{                                   \
+			printf("PASS\n");               \
+		}                                   \
+		else                                \
+		{                                   \
+			printf("FAIL\n");               \
+			exit(1);                        \
+		}                                   \
+	} while (0)
 
 /* Create */
 void test_create(void)
@@ -151,7 +153,7 @@ void test_queue_simple(void)
 
 	q = queue_create();
 	queue_enqueue(q, &data);
-	queue_dequeue(q, (void**)&ptr);
+	queue_dequeue(q, (void **)&ptr);
 	TEST_ASSERT(ptr == &data);
 }
 
@@ -160,7 +162,5 @@ int main(void)
 	test_create();
 	test_queue_simple();
 
-
 	return 0;
 }
-
