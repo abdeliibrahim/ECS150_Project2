@@ -3,14 +3,17 @@
 #include <string.h>
 #include "queue.h"
 
+#include <assert.h>
+#include <stdio.h>
+
 
 struct node {
-	int val;
+	void* val;
 	struct node* next;
 };
 struct queue {
-		struct node* head;
-		struct node* tail;
+		struct node *head;
+		struct node *tail;
 	struct node *cur;
 	struct node *prev;
 		int count;
@@ -43,7 +46,7 @@ int queue_enqueue(queue_t queue, void *data)
 	if(data == NULL || queue == NULL || queue->count == sizeof(struct queue)) 
 		return -1;
 	
-	struct node* newNode;
+	struct node* newNode = malloc(sizeof(struct node));
 	newNode->val = data;
 	newNode->next= NULL;
 
@@ -52,6 +55,7 @@ int queue_enqueue(queue_t queue, void *data)
 	}
 	else if (queue->head != NULL) {
 		queue->tail->next = newNode;
+		queue->tail = newNode;
 	}
 	queue->count++;
 	return 0;
@@ -59,12 +63,18 @@ int queue_enqueue(queue_t queue, void *data)
 
 int queue_dequeue(queue_t queue, void **data) // ptr= null 
 {
-	if (queue == NULL || queue->head == NULL)
+	if (queue == NULL || data == NULL)
 		return -1;
-	*data = queue->head; 
+	data = &(queue->head->val); 
+	struct node *decapitated = NULL;
+	decapitated = queue->head;
 	queue->head = queue->head->next;
-	
 	queue->count--;
+	if (queue->head == NULL) {
+		queue->tail = NULL;
+	}
+	free(decapitated);
+	
 	
 		
 	return 0;
@@ -141,7 +151,7 @@ void test_queue_simple(void)
 
 	q = queue_create();
 	queue_enqueue(q, &data);
-	//queue_dequeue(q, (void**)&ptr);
+	queue_dequeue(q, (void**)&ptr);
 	TEST_ASSERT(ptr == &data);
 }
 
