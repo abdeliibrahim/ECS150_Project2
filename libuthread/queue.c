@@ -3,26 +3,34 @@
 #include <string.h>
 #include "queue.h"
 
-struct queue {
-	void* q[256];
-	int counter; 
-	int first;
+
+struct node {
+	int val;
+	struct node* next;
 };
+struct queue {
+		struct node* head;
+		struct node* tail;
+		int count;
+
+};
+
 
 queue_t queue_create(void)
 {
 	queue_t queue = malloc(sizeof(struct queue));
-	queue->counter= 0;
-	queue->first = 0;
-	return (queue);	
+	queue->head = NULL;
+	queue->tail = NULL;
+	queue->count = 0;
+	return queue;
 }
 
 int queue_destroy(queue_t queue)
 {
-	if (queue->q[0] != NULL || queue->counter != 0)
+	if (queue->head == NULL || queue->count != 0)
 		return (-1);
 	else{
-		free(queue);
+		free(&queue);  // maybe get rid of &
 	}
 	return(0);
 	
@@ -30,31 +38,37 @@ int queue_destroy(queue_t queue)
 
 int queue_enqueue(queue_t queue, void *data)
 {
-	if(data == NULL || queue == NULL)
+	if(data == NULL || queue == NULL || queue->count == sizeof(struct queue)) 
 		return -1;
-	queue->q[queue->counter] = data;
-	queue->counter++;
+	
+	if (queue->head == NULL) {
+		queue->head = data;
+		queue->head->next = NULL;
+	}
+	else if (queue->head != NULL) {
+		queue->tail->next = data;
+		data = queue->tail;
+		queue->tail->next = NULL;
+		
+	}
+	queue->count++;
 	return 0;
 }
 
-int queue_dequeue(queue_t queue, void **data)
+int queue_dequeue(queue_t queue, void **data) // ptr= null 
 {
-	if (queue == NULL || queue->q[queue->first] == NULL)
+	if (queue == NULL || queue->head == NULL)
 		return -1;
-	*data = queue->q[queue->first];
-	queue->q[queue->first] = NULL;
-	queue->first++;
-	if(queue->first == queue->counter){
-		queue->counter = 0;
-	}
+	*data = queue->head; 
+	queue->head = queue->head->next;
 	
-	
+	queue->count--;
 	
 		
 	return 0;
 }
 
-int queue_delete(queue_t queue, void *data)
+int queue_delete(queue_t queue, void *data) 
 {
 	if(queue == NULL || data == NULL)
 		return -1;
@@ -80,9 +94,11 @@ int queue_iterate(queue_t queue, queue_func_t func){
 
 int queue_length(queue_t queue)
 {
-	if(queue->counter == 0)
+	if(queue->count == 0)
 		return -1;
 
-	return queue->counter;
+	return queue->count;
 	
 }
+
+
