@@ -11,6 +11,8 @@ struct node {
 struct queue {
 		struct node* head;
 		struct node* tail;
+	struct node *cur;
+	struct node *prev;
 		int count;
 
 };
