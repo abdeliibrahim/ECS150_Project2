@@ -11,6 +11,9 @@
 
 struct uthread_tcb {
 	/* TODO Phase 2 */
+	int state; 
+	void* stack; 
+	void* reg;
 };
 
 struct uthread_tcb *uthread_current(void)
