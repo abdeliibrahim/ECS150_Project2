@@ -87,7 +87,10 @@ int queue_delete(queue_t queue, void *data)
 	
 
 	if(queue->head->val == data){
+		struct node *decapitated = NULL;
+		decapitated = queue->head;
 		queue->head = queue->head->next;
+		free(decapitated);		
 
 	}
 	else{
