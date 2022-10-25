@@ -7,13 +7,14 @@
 #include <stdio.h>
 
 
+
 struct node {
 	void* val;
 	struct node* next;
 };
 struct queue {
-		struct node *head;
-		struct node *tail;
+	struct node *head;
+	struct node *tail;
 	struct node *cur;
 	struct node *prev;
 		int count;
@@ -35,7 +36,7 @@ int queue_destroy(queue_t queue)
 	if (queue->head == NULL || queue->count != 0)
 		return (-1);
 	else{
-		free(&queue);  // maybe get rid of &
+		free(queue);  // maybe get rid of &
 	}
 	return(0);
 	
@@ -65,36 +66,45 @@ int queue_dequeue(queue_t queue, void **data) // ptr= null
 {
 	if (queue == NULL || data == NULL)
 		return -1;
-	data = &(queue->head->val); 
+	
 	struct node *decapitated = NULL;
 	decapitated = queue->head;
+	*data = (decapitated->val); 
 	queue->head = queue->head->next;
 	queue->count--;
 	if (queue->head == NULL) {
 		queue->tail = NULL;
 	}
-	free(decapitated);
-	
-	
-		
+	free(decapitated);		
 	return 0;
 }
-/*
+
 
 int queue_delete(queue_t queue, void *data) 
 {
 	if(queue == NULL || data == NULL)
 		return -1;
-	int temp=0 ;
-	for (int i =queue->first; i < queue->counter; i++){
-		if(queue->q[i] == data){
-			temp = i;
-			break;
-		}		
+	
+
+	if(queue->head->val == data){
+		queue->head = queue->head->next;
+
 	}
-	while(temp< queue->counter){
-		queue->q[temp] = queue->q[temp+1];
+	else{
+		struct node* cur; 
+		cur = queue->head;
+		while (cur->next != NULL)
+		{
+			if(cur->next->val == data){
+				struct node* remove = cur->next;
+				cur->next = cur->next->next;
+				free(remove);
+				break;
+			}
+			cur = cur->next;
+		}
 	}
+	queue->count--;
 	return 0;
 }
 
@@ -113,12 +123,9 @@ int queue_length(queue_t queue)
 	return queue->count;
 	
 
-}*/
+}
 
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 
 
@@ -145,14 +152,23 @@ void test_create(void)
 void test_queue_simple(void)
 {
 	int data = 3, *ptr;
+	int data1 = 4;
+	int data2= 5;
+	int data3 = 6;
 	queue_t q;
 
 	fprintf(stderr, "*** TEST queue_simple ***\n");
 
 	q = queue_create();
 	queue_enqueue(q, &data);
-	queue_dequeue(q, (void**)&ptr);
-	TEST_ASSERT(ptr == &data);
+	queue_enqueue(q, &data2);
+	queue_enqueue(q, &data3);
+	queue_enqueue(q, &data1);
+	printf("%d\n", queue_length(q));
+	queue_delete(q, &data);
+	printf("%d\n", queue_length(q));
+	//queue_dequeue(q, (void**)&ptr);
+	
 }
 
 int main(void)
