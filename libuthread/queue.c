@@ -17,7 +17,7 @@ struct queue {
 	struct node *tail;
 
 		int count;
-
+ 
 };
 
 
@@ -32,7 +32,7 @@ queue_t queue_create(void)
 
 int queue_destroy(queue_t queue)
 {
-	if (queue->head == NULL || queue->count == 0)
+	if (queue->head == NULL || queue->count != 0)
 		return (-1);
 	else{
 	
