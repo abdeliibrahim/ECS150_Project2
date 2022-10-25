@@ -10,23 +10,25 @@
 #include "uthread.h"
 #include "queue.h"
 
-#define START 0
-#define READY 1
-#define RUNNING 2
-#define WAITING 3
+//#define START 0
+#define READY 0
+#define RUNNING 1
+#define WAITING 2
+#define Block 3
 #define DONE 4
 
 
-queue_t glob; 
+queue_t glob;
+
+int tid;  
 struct uthread_tcb {
 	
 	uthread_ctx_t *ctx;
 	int state;
-	
-	
+	void* stack; 
 	pid_t tid; //thread id
+	struct uthread_tcb* nextThread; // this has to point to the next thread in the queue, intailly it will be null 
 	
-
 };
 
 struct uthread_tcb *uthread_current(void)
@@ -37,15 +39,29 @@ struct uthread_tcb *uthread_current(void)
 void uthread_yield(void)
 {
 	/* TODO Phase 2 */
+	// Context switching in yelled 
 }
 
 void uthread_exit(void)
 {
 	/* TODO Phase 2 */
+	// also context switching 
 }
 
 int uthread_create(uthread_func_t func, void *arg)
-{
+{	
+	// This function looks good according to the TA
+	// push it into the queue after it was created
+	// Info the current thread
+	struct uthread_tcb* newThread = malloc(sizeof(struct uthread_tcb));
+	newThread->stack = uthread_ctx_alloc_stack();
+	newThread->state = READY;
+	newThread->tid = tid;
+	newThread->nextThread = NULL;
+	tid++; 
+	int succ = uthread_ctx_init(newThread->ctx, newThread->stack, func, arg);
+	return succ;
+	
 	
 }
 
