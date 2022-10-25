@@ -33,10 +33,18 @@ queue_t queue_create(void)
 
 int queue_destroy(queue_t queue)
 {
-	if (queue->head == NULL || queue->count != 0)
+	if (queue->head == NULL || queue->count == 0)
 		return (-1);
 	else{
-		free(queue);  // maybe get rid of &
+	
+		while (queue->head!=NULL && queue->head->next != NULL) {
+			struct node *destroying;
+			free (queue->head->val);
+			queue->head = queue->head->next;
+			destroying = queue->head->next;
+			queue->count--;
+		}
+		free(queue);
 	}
 	return(0);
 	
@@ -167,9 +175,9 @@ void test_queue_simple(void)
 	queue_enqueue(q, &data2);
 	queue_enqueue(q, &data3);
 	queue_enqueue(q, &data1);
-	printf("%d\n", queue_length(q));
-	queue_delete(q, &data);
-	printf("%d\n", queue_length(q));
+	printf("%d\n", (q->head->val));
+	queue_destroy(q);
+	
 	//queue_dequeue(q, (void**)&ptr);
 	
 }
