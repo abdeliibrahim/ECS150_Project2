@@ -15,8 +15,6 @@ struct node {
 struct queue {
 	struct node *head;
 	struct node *tail;
-	struct node *cur;
-	struct node *prev;
 	int count;
 
 };
@@ -36,7 +34,10 @@ int queue_destroy(queue_t queue)
 	if (queue->head == NULL || queue->count == 0)
 		return (-1);
 	else{
-		free(queue);  // maybe get rid of &
+		free((void*)queue->head);
+		free((void*)queue->tail);
+		(queue->count = NULL);
+		free((void*)queue);
 	}
 	return(0);
 	
