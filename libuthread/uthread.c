@@ -22,7 +22,8 @@ struct uthread_tcb {
 	
 	uthread_ctx_t *ctx;
 	int state;
-	
+	void *stack;
+
 	
 	pid_t tid; //thread id
 	
@@ -47,10 +48,12 @@ void uthread_exit(void)
 int uthread_create(uthread_func_t func, void *arg)
 {
 	
+/* TODO Phase 2 */
 }
 
 int uthread_start(uthread_func_t func, void *arg)
 {
+	func(arg);
 	/* TODO Phase 2 */
 }
 
