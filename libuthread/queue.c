@@ -15,8 +15,7 @@ struct node {
 struct queue {
 	struct node *head;
 	struct node *tail;
-	struct node *cur;
-	struct node *prev;
+
 		int count;
 
 };
@@ -37,14 +36,10 @@ int queue_destroy(queue_t queue)
 		return (-1);
 	else{
 	
-		while (queue->head!=NULL && queue->head->next != NULL) {
-			struct node *destroying;
-			free (queue->head->val);
-			queue->head = queue->head->next;
-			destroying = queue->head->next;
-			queue->count--;
-		}
-		free(queue);
+		free((void*)queue->head);
+		free((void*)queue->tail);
+		(queue->count = NULL);
+		free((void*)queue);
 	}
 	return(0);
 	
@@ -177,6 +172,9 @@ void test_queue_simple(void)
 	queue_enqueue(q, &data1);
 	printf("%d\n", (q->head->val));
 	queue_destroy(q);
+	printf("%d\n", (q->tail->val));
+	printf("%d\n", (queue_length(q)));
+
 	
 	//queue_dequeue(q, (void**)&ptr);
 	
