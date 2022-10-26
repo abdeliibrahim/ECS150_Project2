@@ -18,7 +18,7 @@
 #define DONE 4
 
 
-queue_t glob;
+queue_t* thread_q;
 
 int tid;  
 struct uthread_tcb {
@@ -31,32 +31,38 @@ struct uthread_tcb {
 	
 };
 
+static struct uthread_tcb* current;
+
 struct uthread_tcb *uthread_current(void)
 {
 	/* TODO Phase 2/4 */
-	// Iterate through the queue and find the element that is running 
-	// and return its *ctx
-	return;
+	queue_dequeue(thread_q, current);
+	return current;
 }
 
 void uthread_yield(void)
 {
 	/* TODO Phase 2 */
-	// Context switching
-	// this gets the pointer to the current running thread
-	// this is not entirely the code, but I believe this is how it is supposed to be
 	struct uthread_tcb* next; 
 	struct uthread_tcb* cur = uthread_current();	
-	queue_dequeue(glob, next);
-	queue_enqueue(glob, cur);
+	queue_dequeue(thread_q, next);
+	cur->state = DONE;
+	next->state = RUNNING;
+	current = next;
 	uthread_ctx_switch(cur->ctx, next->ctx);
-
 }
 
 void uthread_exit(void)
 {
 	/* TODO Phase 2 */
-	// also context switching 
+	struct uthread_tcb* next; 
+	struct uthread_tcb* cur = uthread_current();	
+	queue_dequeue(thread_q, next);
+	cur->state = DONE;
+	next->state = RUNNING;
+	queue_enqueue(thread_q, cur);
+	current = next;
+	uthread_ctx_switch(cur->ctx, next->ctx);
 }
 
 int uthread_create(uthread_func_t func, void *arg)
@@ -71,16 +77,34 @@ int uthread_create(uthread_func_t func, void *arg)
 	newThread->nextThread = NULL;
 	tid++; 
 	int succ = uthread_ctx_init(newThread->ctx, newThread->stack, func, arg);
-	queue_enqueue(glob, newThread);
+	queue_enqueue(thread_q, newThread);
 	return succ;
 	
 	
 }
 
-int uthread_start(uthread_func_t func, void *arg)
+int uthread_run(bool preempt, uthread_func_t func, void *arg)
 {
 	/* TODO Phase 2 */
-	glob = queue_create();
+	if(thread_q == NULL){
+	thread_q = queue_create();
+	uthread_create(func, arg);
+	struct uthread_tcb* intailThread;
+	intailThread = uthread_current();
+	intailThread->state = RUNNING;
+	queue_enqueue(thread_q,intailThread);
+	
+	}
+	else{
+		uthread_create(func, arg);
+	}
+
+	while(1){
+		if(queue_length(thread_q) == NULL);
+			break;
+		thread_yeild();
+	}
+
 }
 
 void uthread_block(void)
