@@ -15,9 +15,8 @@ struct node {
 struct queue {
 	struct node *head;
 	struct node *tail;
+	int count;
 
-		int count;
- 
 };
 
 
@@ -32,14 +31,13 @@ queue_t queue_create(void)
 
 int queue_destroy(queue_t queue)
 {
-	if (queue->head == NULL || queue->count != 0)
+	if (queue->head == NULL || queue->count == 0)
 		return (-1);
 	else{
-	
-		free((void*)queue->head);
-		free((void*)queue->tail);
-		(queue->count = NULL);
-		free((void*)queue);
+		//free((void*)queue->head);
+		//free((void*)queue->tail);
+		//(queue->count = NULL);
+		free(queue);
 	}
 	return(0);
 	
@@ -85,53 +83,67 @@ int queue_dequeue(queue_t queue, void **data) // ptr= null
 
 int queue_delete(queue_t queue, void *data) 
 {
-	if(queue == NULL || data == NULL)
+	if(queue->count == 0 || data == NULL)
 		return -1;
 	
+	int found =0; 
 
 	if(queue->head->val == data){
 		struct node *decapitated = NULL;
 		decapitated = queue->head;
 		queue->head = queue->head->next;
-		free(decapitated);		
-
+		free(decapitated);	
+		found = 1;
 	}
+
 	else{
 		struct node* cur; 
+		struct node* next; 
 		cur = queue->head;
 		while (cur->next != NULL)
 		{
+			next = cur->next;
 			if(cur->next->val == data){
 				struct node* remove = cur->next;
 				cur->next = cur->next->next;
 				free(remove);
+				found = 1;
 				break;
 			}
-			cur = cur->next;
+			cur = next;
 		}
 	}
-	queue->count--;
+	if(found == 1)
+		queue->count--;
 	return 0;
 }
 
 int queue_iterate(queue_t queue, queue_func_t func){
 	if(queue == NULL || func == NULL)
 		return -1;
+	
+	struct node* cur; 
+	struct node* next; 
+	cur = queue->head;
+		while (cur!= NULL)
+		{	next = cur->next;
+			func(queue, cur->val);
+			cur = next;
+		}
+
 	return 0;
 	
 }
 
 int queue_length(queue_t queue)
 {
-	if(queue->count == 0)
+	if(queue== NULL)
 		return -1;
 
 	return queue->count;
 	
 
 }
-
-
 
 
 
@@ -170,12 +182,9 @@ void test_queue_simple(void)
 	queue_enqueue(q, &data2);
 	queue_enqueue(q, &data3);
 	queue_enqueue(q, &data1);
-	printf("%d\n", (q->head->val));
-	queue_destroy(q);
-	printf("%d\n", (q->tail->val));
-	printf("%d\n", (queue_length(q)));
-
-	
+	printf("%d\n", queue_length(q));
+	queue_iterate(q, queue_delete);
+	printf("%d\n", queue_length(q));
 	//queue_dequeue(q, (void**)&ptr);
 	
 }
@@ -188,4 +197,3 @@ int main(void)
 
 	return 0;
 }
-

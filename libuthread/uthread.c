@@ -34,6 +34,7 @@ struct uthread_tcb {
 struct uthread_tcb *uthread_current(void)
 {
 	/* TODO Phase 2/4 */
+	
 }
 
 void uthread_yield(void)
@@ -60,6 +61,7 @@ int uthread_create(uthread_func_t func, void *arg)
 	newThread->nextThread = NULL;
 	tid++; 
 	int succ = uthread_ctx_init(newThread->ctx, newThread->stack, func, arg);
+	queue_enqueue(glob, newThread);
 	return succ;
 	
 	
