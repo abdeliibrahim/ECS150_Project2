@@ -36,20 +36,23 @@ static struct uthread_tcb* current;
 struct uthread_tcb *uthread_current(void)
 {
 	/* TODO Phase 2/4 */
-	queue_dequeue(thread_q, current);
 	return current;
 }
 
 void uthread_yield(void)
 {
 	/* TODO Phase 2 */
-	struct uthread_tcb* next; 
-	struct uthread_tcb* cur = uthread_current();	
-	queue_dequeue(thread_q, next);
-	cur->state = DONE;
+	struct uthread_tcb* cur = uthread_current();
+	cur->state = WAITING;
+	queue_enqueue(thread_q, cur);
+	if(queue_length != NULL){
+	struct uthread_tcb* next ; 
+	queue_dequeue(thread_q, next);	
 	next->state = RUNNING;
 	current = next;
 	uthread_ctx_switch(cur->ctx, next->ctx);
+	}
+
 }
 
 void uthread_exit(void)
@@ -60,7 +63,6 @@ void uthread_exit(void)
 	queue_dequeue(thread_q, next);
 	cur->state = DONE;
 	next->state = RUNNING;
-	queue_enqueue(thread_q, cur);
 	current = next;
 	uthread_ctx_switch(cur->ctx, next->ctx);
 }
