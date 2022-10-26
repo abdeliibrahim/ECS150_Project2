@@ -34,13 +34,23 @@ struct uthread_tcb {
 struct uthread_tcb *uthread_current(void)
 {
 	/* TODO Phase 2/4 */
-	
+	// Iterate through the queue and find the element that is running 
+	// and return its *ctx
+	return;
 }
 
 void uthread_yield(void)
 {
 	/* TODO Phase 2 */
-	// Context switching in yelled 
+	// Context switching
+	// this gets the pointer to the current running thread
+	// this is not entirely the code, but I believe this is how it is supposed to be
+	struct uthread_tcb* next; 
+	struct uthread_tcb* cur = uthread_current();	
+	queue_dequeue(glob, next);
+	queue_enqueue(glob, cur);
+	uthread_ctx_switch(cur->ctx, next->ctx);
+
 }
 
 void uthread_exit(void)
@@ -70,6 +80,7 @@ int uthread_create(uthread_func_t func, void *arg)
 int uthread_start(uthread_func_t func, void *arg)
 {
 	/* TODO Phase 2 */
+	glob = queue_create();
 }
 
 void uthread_block(void)
