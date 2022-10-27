@@ -18,7 +18,7 @@
 #define DONE 4
 
 
-queue_t* thread_q;
+queue_t thread_q;
 
 int tid;  
 struct uthread_tcb {
@@ -45,9 +45,9 @@ void uthread_yield(void)
 	struct uthread_tcb* cur = uthread_current();
 	cur->state = WAITING;
 	queue_enqueue(thread_q, cur);
-	if(queue_length != NULL){
+	if(queue_length(thread_q) != 0){
 	struct uthread_tcb* next ; 
-	queue_dequeue(thread_q, next);	
+	queue_dequeue(thread_q, (void**)&next);
 	next->state = RUNNING;
 	current = next;
 	uthread_ctx_switch(cur->ctx, next->ctx);
@@ -60,7 +60,7 @@ void uthread_exit(void)
 	/* TODO Phase 2 */
 	struct uthread_tcb* next; 
 	struct uthread_tcb* cur = uthread_current();	
-	queue_dequeue(thread_q, next);
+	queue_dequeue(thread_q, (void**)&next);
 	cur->state = DONE;
 	next->state = RUNNING;
 	current = next;
@@ -102,9 +102,9 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	}
 
 	while(1){
-		if(queue_length(thread_q) == NULL);
+		if(queue_length(thread_q) == 0)
 			break;
-		thread_yeild();
+		uthread_yield();
 	}
 
 }
