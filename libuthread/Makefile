@@ -4,8 +4,11 @@ CC  := gcc
 Cflags := -Wall -Werror -g 
 all: $(lib)
 
-$(lib): queue.o 
-	ar rcs libuthread.a queue.o
+
+$(lib): queue.o uthread.o
+	ar rcs libuthread.a queue.o uthread.o
+
+
 
 %.o: %.c %.h
 	$(CC) $(Cflags) -c $<
