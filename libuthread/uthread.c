@@ -78,11 +78,19 @@ int uthread_create(uthread_func_t func, void *arg)
 	newThread->stack = uthread_ctx_alloc_stack();
 	newThread->state = READY;
 	newThread->tid = tid;
+	newThread->ctx = (struct uthread_ctx_t *) malloc(sizeof(uthread_ctx_t));
 	newThread->nextThread = NULL;
 	tid++; 
 	int succ = uthread_ctx_init(newThread->ctx, newThread->stack, func, arg);
+	if (succ = -1) {
+		perror("Error.");
+		return -1;
+	}
+	preempt_disable();
 	queue_enqueue(thread_q, newThread);
+	preempt_enable();
 	return succ;
+
 	
 	
 }
