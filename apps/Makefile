@@ -35,7 +35,7 @@ endif
 CUR_PWD := $(shell pwd)
 
 # Define compilation toolchain
-CC	= gcc
+CC	= gcc -D_XOPEN_SOURCE
 
 # General gcc options
 CFLAGS	:= -Wall -Wextra -Werror

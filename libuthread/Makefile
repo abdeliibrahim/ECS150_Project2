@@ -1,6 +1,6 @@
 # Target library
 lib := libuthread.a
-CC  := gcc #-D_XOPEN_SOURCE
+CC  := gcc -D_XOPEN_SOURCE
 Cflags := -Wall -Werror -g 
 tag:= -c -o $@ $<
 all: $(lib)
