@@ -42,9 +42,13 @@ struct uthread_tcb *uthread_current(void)
 void uthread_yield(void)
 {
 	/* TODO Phase 2 */
+	// put the current at the end of the queue
+	// get the next thread in the queue
 	struct uthread_tcb* cur = uthread_current();
-	cur->state = Block;
-	queue_enqueue(thread_q, cur);
+	if(cur->tid != 0){
+		cur->state = WAITING;
+		queue_enqueue(thread_q, cur);
+	}	
 	if(queue_length(thread_q) != 0){
 	struct uthread_tcb* next ; 
 	queue_dequeue(thread_q, (void**)&next);
@@ -88,15 +92,16 @@ int uthread_create(uthread_func_t func, void *arg)
 int uthread_run(bool preempt, uthread_func_t func, void *arg)
 {
 	/* TODO Phase 2 */
-	if(thread_q == NULL && preempt == true){
+	if(thread_q == NULL ){
 	thread_q = queue_create();
-	struct uthread_tcb* idealThread;
+	struct uthread_tcb* idealThread = NULL;
 	idealThread->stack = uthread_ctx_alloc_stack();
 	idealThread->state = RUNNING;
 	idealThread->tid = tid;
 	tid++;
-	queue_enqueue(thread_q, idealThread);	
+	current = idealThread;
 	uthread_create(func, arg);
+	
 	}
 	else{
 		uthread_create(func, arg);
@@ -107,7 +112,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 			break;
 		uthread_yield();
 	}
-
+	return 0;
 }
 
 void uthread_block(void)

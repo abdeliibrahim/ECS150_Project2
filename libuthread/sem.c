@@ -35,13 +35,25 @@ int sem_down(sem_t sem)
 	/* TODO Phase 3 */
 	if(sem == NULL)
 		return -1;
-	while(sem->count == 0){
-		sleep(10);
+
+	// enqueue the current into the queue if count =< 0
+	if(sem->count <= 0){
+		queue_enqueue(sem->blocked, uthread_current());
+		uthread_yield();
+	}
+	else{
+		sem->count--;
 	}
 	return 0;
+
 }
 
 int sem_up(sem_t sem)
 {
 	/* TODO Phase 3 */
+	if(sem == NULL)
+		return -1;
+	
+	
+	return 0;
 }
