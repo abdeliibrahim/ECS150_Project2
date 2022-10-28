@@ -3,8 +3,6 @@
 #include <string.h>
 #include "queue.h"
 
-#include <assert.h>
-#include <stdio.h>
 
 
 

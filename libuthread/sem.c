@@ -38,8 +38,9 @@ int sem_down(sem_t sem)
 
 	// enqueue the current into the queue if count =< 0
 	if(sem->count <= 0){
-		queue_enqueue(sem->blocked, uthread_current());
-		uthread_yield();
+		struct uthread_tcb* thread = uthread_current();
+		queue_enqueue(sem->blocked, thread);
+		uthread_block();
 	}
 	else{
 		sem->count--;

@@ -73,9 +73,7 @@ void uthread_exit(void)
 
 int uthread_create(uthread_func_t func, void *arg)
 {	
-	// This function looks good according to the TA
-	// push it into the queue after it was created
-	// Info the current thread
+
 	struct uthread_tcb* newThread = malloc(sizeof(struct uthread_tcb));
 	newThread->stack = uthread_ctx_alloc_stack();
 	newThread->state = READY;

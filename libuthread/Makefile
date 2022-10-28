@@ -1,13 +1,13 @@
 # Target library
 lib := libuthread.a
-CC  := gcc -D_XOPEN_SOURCE
+CC  := gcc #-D_XOPEN_SOURCE
 Cflags := -Wall -Werror -g 
 tag:= -c -o $@ $<
 all: $(lib)
 
 
-$(lib): queue.o uthread.o sem.o context.o
-	ar rcs libuthread.a queue.o uthread.o sem.o context.o
+$(lib): queue.o uthread.o sem.o preempt.o context.o
+	ar rcs libuthread.a queue.o uthread.o sem.o preempt.o context.o 
 
 
 # making queue.o
@@ -18,13 +18,18 @@ $(lib): queue.o uthread.o sem.o context.o
 %.o: %.c %.h context.c private.h queue.h
 	$(CC) $(Cflags) -c -o $@ $<
 
+preempt.o: preempt.c private.h uthread.h context.c
+	$(CC) $(Cflags) -c -o $@ $<
 
+%.o: %.c private.h uthread.h
+	$(CC) $(Cflags) -c -o $@ $<
 
 # making sem.o
 %.o: %.c %.h private.h 
 	$(CC) $(Cflags) -c -o $@ $<
 
 
+
 clean:
-	rm -f  $(lib) libuthread.a queue.o uthread.o sem.o context.o
+	rm -f  $(lib) libuthread.a queue.o uthread.o sem.o context.o preempt.o
 ## TODO: Phase 1
