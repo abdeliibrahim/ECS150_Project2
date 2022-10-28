@@ -50,7 +50,7 @@ void uthread_yield(void)
 		queue_enqueue(thread_q, cur);
 	}	
 	if(queue_length(thread_q) != 0){
-	struct uthread_tcb* next ; 
+	struct uthread_tcb* next = malloc(sizeof(struct uthread_tcb)) ; 
 	queue_dequeue(thread_q, (void**)&next);
 	next->state = RUNNING;
 	current = next;
@@ -87,7 +87,7 @@ int uthread_create(uthread_func_t func, void *arg)
 	
 }
 
-int uthread_run(bool preempt, uthread_func_t func, void *arg)
+int uthread_run (bool preempt, uthread_func_t func, void *arg)
 {
 	/* TODO Phase 2 */
 	if(thread_q == NULL ){
@@ -98,7 +98,7 @@ int uthread_run(bool preempt, uthread_func_t func, void *arg)
 	idealThread->tid = tid;
 	tid++;
 	current = idealThread;
-	uthread_create(func, arg);
+	//uthread_create(func, arg);
 	
 	}
 	else{
