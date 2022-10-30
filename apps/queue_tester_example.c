@@ -41,7 +41,5 @@ int main(void)
 {
 	test_create();
 	test_queue_simple();
-
-
 	return 0;
 }

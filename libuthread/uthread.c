@@ -41,27 +41,19 @@ struct uthread_tcb *uthread_current(void)
 
 void uthread_yield(void)
 {
-	/* TODO Phase 2 */
-	// put the current at the end of the queue
-	// get the next thread in the queue
-	printf("in yield\n");
+
+	if (queue_length(thread_q) == 0)
+		return;
 	struct uthread_tcb* cur = uthread_current();
-	if(cur->tid != 0){
-		cur->state = WAITING;
-		queue_enqueue(thread_q, cur);
-	}	
+	cur->state = WAITING;
+	queue_enqueue(thread_q, cur);
 	if(queue_length(thread_q) != 0){
-	printf("in the if statement of yield\n");
+	//printf("in the if statement of yield\n");
 	struct uthread_tcb* next = malloc(sizeof(struct uthread_tcb)) ; 
-	printf("dequeuing the next thread in yield ## threads in queue %d \n", queue_length(thread_q));
 	queue_dequeue(thread_q, (void**)&next);
 	next->state = RUNNING;
 	current = next;
-	printf("current thread id %d \n", cur->tid);
-	printf("next thread id %d \n", next->tid);
-	printf("context switching\n");
 	uthread_ctx_switch(cur->ctx, next->ctx);
-	printf(" after context switching\n");
 	}
 
 }
@@ -88,9 +80,7 @@ int uthread_create(uthread_func_t func, void *arg)
 	newThread->ctx = malloc(sizeof(uthread_ctx_t));
 	newThread->nextThread = NULL;
 	tid++; 
-	//printf("Inside create before init  \n");
 	int succ = uthread_ctx_init(newThread->ctx, newThread->stack, func, arg);
-	//printf("Inside create after init  \n");
 	if (succ == -1) {
 		perror("Error.");
 		return -1;
@@ -116,20 +106,19 @@ int uthread_run (bool preempt, uthread_func_t func, void *arg)
 	idealThread->tid = tid;
 	tid++;
 	idealThread->ctx = malloc(sizeof(uthread_ctx_t));
-	uthread_ctx_init(idealThread->ctx, idealThread->stack, NULL, NULL);
+	//uthread_ctx_init(idealThread->ctx, idealThread->stack, NULL, NULL);
 	current = idealThread;
 	uthread_create(func, arg);
 	}
 	else{
 		uthread_create(func, arg);
 	}
-	printf("before the while loop \n");
+	
 	while(1){
+		
 		if(queue_length(thread_q) == 0)
 			break;
-		printf("calling yield\n");
 		uthread_yield();
-		printf("after yield \n");
 	}
 	return 0;
 }
