@@ -55,6 +55,13 @@ int sem_up(sem_t sem)
 	if(sem == NULL)
 		return -1;
 	
+	if (queue_length(sem->blocked) != 0) {
+		void * ptr = malloc(sizeof(ptr));
+		queue_dequeue(sem->blocked, (void**)&ptr);
+		uthread_unblock(sem);
+
+	}
+	
 	
 	return 0;
 }
