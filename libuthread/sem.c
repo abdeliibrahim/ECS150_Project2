@@ -52,14 +52,15 @@ int sem_down(sem_t sem)
 int sem_up(sem_t sem)
 {
 	/* TODO Phase 3 */
-	if(sem == NULL)
+	if(sem == NULL) {
+
 		return -1;
-	
+	}	
 	if (queue_length(sem->blocked) != 0) {
 		void * ptr = malloc(sizeof(ptr));
 		queue_dequeue(sem->blocked, (void**)&ptr);
 		uthread_unblock(sem);
-
+		sem->count++;
 	}
 	
 	
