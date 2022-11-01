@@ -38,10 +38,11 @@ static void source(void *arg)
 {
 	struct channel *c = (struct channel*) arg;
 	size_t i;
-
+	
 	for (i = 2; i <= max; i++) {
 		c->value = i;
 		sem_up(c->consume);
+
 		sem_down(c->produce);
 	}
 
@@ -94,11 +95,10 @@ static void sink(void *arg)
 
 	while (1) {
 		struct filter *f;
-
 		sem_down(p->consume);
 		value = p->value;
 		sem_up(p->produce);
-
+	
 		if (value == -1)
 			break;
 
@@ -108,6 +108,7 @@ static void sink(void *arg)
 		f->left = p;
 		f->prime = value;
 		f->next = NULL;
+
 
 		p = malloc(sizeof(*p));
 		p->produce = sem_create(0);

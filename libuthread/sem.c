@@ -7,11 +7,12 @@
 
 #include  <stdio.h>
 
-
+int c = 1;
 struct semaphore {
 	/* TODO Phase 3 */
 	queue_t blocked;
 	int count;
+	int counter;
 	
 };
 
@@ -21,7 +22,10 @@ sem_t sem_create(size_t count)
 	struct semaphore* sem = malloc(sizeof(struct semaphore));
 	sem->count = count;
 	sem->blocked = queue_create();
+	sem->counter = c;
+	c++;
 	return sem; 
+
 }
 
 int sem_destroy(sem_t sem)
@@ -46,9 +50,7 @@ int sem_down(sem_t sem)
 		queue_enqueue(sem->blocked, thread);
 		uthread_block();
 	}
-	else{
-		sem->count--;
-	}
+	sem->count--;
 	
 	return 0;
 
@@ -60,12 +62,12 @@ int sem_up(sem_t sem)
 	if(sem == NULL) {
 		return -1;
 	}	
-	sem->count++;
+	
 	if (queue_length(sem->blocked) != 0) {
 		void * ptr = malloc(sizeof(ptr));
 		queue_dequeue(sem->blocked, (void**)&ptr);
 		uthread_unblock(ptr);
 	}
-
+	sem->count++;
 	return 0;
 }

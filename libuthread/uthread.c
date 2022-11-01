@@ -88,7 +88,6 @@ int uthread_create(uthread_func_t func, void *arg)
 	}
 	//preempt_disable();
 	queue_enqueue(thread_q, newThread);
-	//printf("exiting the create \n");
 	//preempt_enable();
 	return succ;
 
@@ -140,8 +139,6 @@ void uthread_unblock(struct uthread_tcb *uthread)
 {
 	uthread->state = READY;
 	queue_enqueue(thread_q, uthread);
-	
-
 
 }
 
