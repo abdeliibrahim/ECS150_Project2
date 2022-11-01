@@ -131,7 +131,6 @@ void uthread_block(void)
 {
 	/* TODO Phase 3 */
 	struct uthread_tcb* cur = uthread_current();	
-	printf("in block TID = %d \n", cur->tid);
 	cur->state = Block;
 	uthread_yield();
 
@@ -141,7 +140,8 @@ void uthread_unblock(struct uthread_tcb *uthread)
 {
 	uthread->state = READY;
 	queue_enqueue(thread_q, uthread);
-	printf("in unblock TID = %d \n", uthread->tid);
-	/* TODO Phase 3 */
+	
+
+
 }
 

@@ -21,14 +21,15 @@ static void thread3(void *arg)
 	(void)arg;
 
 	sem_down(sem3);		/* Wait for thread1 */
+
 	printf("thread3\n");
+
 	sem_up(sem2);		/* Unblock thread2 */
 }
 
 static void thread2(void *arg)
 {
 	(void)arg;
-
 	sem_down(sem2);		/* Wait for thread 3 */
 	printf("thread2\n");
 	sem_up(sem1);		/* Unblock thread1 */
