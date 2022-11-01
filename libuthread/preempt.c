@@ -27,7 +27,13 @@ void preempt_enable(void)
 
 void preempt_start(bool preempt)
 {
-	/* TODO Phase 4 */
+	/* TODO Phase 4 
+	if(preempt){
+		preempt_enable();
+		signalaction(SIGVTALRM,uthread_yield);
+		set_ittimer
+	}
+	*/
 }
 
 void preempt_stop(void)

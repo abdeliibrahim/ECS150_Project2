@@ -21,11 +21,12 @@ $(lib): queue.o uthread.o sem.o preempt.o context.o
 preempt.o: preempt.c private.h uthread.h context.c
 	$(CC) $(Cflags) -c -o $@ $<
 
+# making context.o
 %.o: %.c private.h uthread.h
 	$(CC) $(Cflags) -c -o $@ $<
 
 # making sem.o
-%.o: %.c %.h private.h 
+sem.o: sem.c sem.h private.h queue.h
 	$(CC) $(Cflags) -c -o $@ $<
 
 

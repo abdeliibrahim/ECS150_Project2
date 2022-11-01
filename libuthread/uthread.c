@@ -10,7 +10,7 @@
 #include "uthread.h"
 #include "queue.h"
 
-//#define START 0
+
 #define READY 0
 #define RUNNING 1
 #define WAITING 2
@@ -45,10 +45,11 @@ void uthread_yield(void)
 	if (queue_length(thread_q) == 0)
 		return;
 	struct uthread_tcb* cur = uthread_current();
+	if(cur->state != Block){
 	cur->state = WAITING;
 	queue_enqueue(thread_q, cur);
+	}	
 	if(queue_length(thread_q) != 0){
-	//printf("in the if statement of yield\n");
 	struct uthread_tcb* next = malloc(sizeof(struct uthread_tcb)) ; 
 	queue_dequeue(thread_q, (void**)&next);
 	next->state = RUNNING;
@@ -99,6 +100,7 @@ int uthread_run (bool preempt, uthread_func_t func, void *arg)
 {
 	/* TODO Phase 2 */
 	if(thread_q == NULL ){
+	preempt_start(preempt);
 	thread_q = queue_create();
 	struct uthread_tcb* idealThread = malloc(sizeof(struct uthread_tcb));
 	idealThread->stack = uthread_ctx_alloc_stack();
@@ -106,13 +108,15 @@ int uthread_run (bool preempt, uthread_func_t func, void *arg)
 	idealThread->tid = tid;
 	tid++;
 	idealThread->ctx = malloc(sizeof(uthread_ctx_t));
-	//uthread_ctx_init(idealThread->ctx, idealThread->stack, NULL, NULL);
 	current = idealThread;
 	uthread_create(func, arg);
+
 	}
 	else{
 		uthread_create(func, arg);
 	}
+	if(preempt)
+		preempt_enable();
 	
 	while(1){
 		
@@ -125,11 +129,19 @@ int uthread_run (bool preempt, uthread_func_t func, void *arg)
 
 void uthread_block(void)
 {
-	/* TODO Phase 4 */
+	/* TODO Phase 3 */
+	struct uthread_tcb* cur = uthread_current();	
+	printf("in block TID = %d \n", cur->tid);
+	cur->state = Block;
+	uthread_yield();
+
 }
 
 void uthread_unblock(struct uthread_tcb *uthread)
 {
-	/* TODO Phase 4 */
+	uthread->state = READY;
+	queue_enqueue(thread_q, uthread);
+	printf("in unblock TID = %d \n", uthread->tid);
+	/* TODO Phase 3 */
 }
 

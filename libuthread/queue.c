@@ -32,9 +32,6 @@ int queue_destroy(queue_t queue)
 	if (queue->head == NULL || queue->count == 0)
 		return (-1);
 	else{
-		//free((void*)queue->head);
-		//free((void*)queue->tail);
-		//(queue->count = NULL);
 		free(queue);
 	}
 	return(0);

@@ -5,6 +5,7 @@
 #include "sem.h"
 #include "private.h"
 
+#include  <stdio.h>
 struct semaphore {
 	/* TODO Phase 3 */
 	queue_t blocked;
@@ -45,6 +46,8 @@ int sem_down(sem_t sem)
 	else{
 		sem->count--;
 	}
+	printf("sem down count %d\n",sem->count);
+	printf("sem down ## in queues %d\n", queue_length(sem->blocked));
 	return 0;
 
 }
@@ -59,10 +62,11 @@ int sem_up(sem_t sem)
 	if (queue_length(sem->blocked) != 0) {
 		void * ptr = malloc(sizeof(ptr));
 		queue_dequeue(sem->blocked, (void**)&ptr);
-		uthread_unblock(sem);
+		uthread_unblock(ptr);
 		sem->count++;
+		printf("sem up ## in queues %d\n", queue_length(sem->blocked));
+		printf("sem up count %i\n", sem->count);
 	}
-	
 	
 	return 0;
 }
