@@ -7,12 +7,12 @@
 
 #include  <stdio.h>
 
-int c = 1;
+
 struct semaphore {
 	/* TODO Phase 3 */
 	queue_t blocked;
 	int count;
-	int counter;
+
 	
 };
 
