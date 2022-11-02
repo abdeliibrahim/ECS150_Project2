@@ -57,7 +57,7 @@ void handler(int temp){
 	uthread_yield();
 }
 /*
-The following code comes from the following website:
+The following code is inspired by this resource provided by the TA:
 https://www.cs.bham.ac.uk/~exr/lectures/opsys/13_14/examples/signals/timer_signals.c
 */
 void preempt_start(bool preempt)
