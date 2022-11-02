@@ -28,10 +28,10 @@ void preempt_disable(void)
 	*/
 	
 	sigset_t temp;
-	if(pr){
+	if(pr){				// checking if preempt is enabled
 	sigemptyset(&temp); // Start with an empty set of signals.
   	sigaddset(&temp, SIGALRM); // Add the SIGALRM signal to the set.
-	sigprocmask(SIG_BLOCK, &sigset, NULL);
+	sigprocmask(SIG_BLOCK, &sigset, NULL);	// examines the signals
 	}
 }
 
@@ -44,11 +44,11 @@ void preempt_enable(void)
 	3. call seg_emptyset, seg_addsig(temp), segvt_alrm, seg_propmask(block/unblock, temp,NULL )	
 	*/
  	
-	sigset_t temp;
-	if(pr){
+	sigset_t temp; 
+	if(pr){ // checking if preempt is enabled
 	sigemptyset(&temp); // Start with an empty set of signals.
   	sigaddset(&temp, SIGALRM); // Add the SIGALRM signal to the set.
-	sigprocmask(SIG_UNBLOCK, &sigset, NULL);
+	sigprocmask(SIG_UNBLOCK, &sigset, NULL); // examines the signals
 	}
 }
 
@@ -64,12 +64,15 @@ void preempt_start(bool preempt)
 {
 	pr = preempt;
 	if(preempt){
-	struct sigaction action;          	// Allocate struct on stack.
-	action.sa_handler = handler; 	// Set the function pointer our handler.
-	//action.sa_flags = 0;              	// Use no special flags.
-	sigfillset(&action.sa_mask);      	// Again, full set of signals blocked while this
-                                   		// handler runs
-	struct itimerval timer; 
+	struct sigaction action;		// Allocate struct on stack.
+	action.sa_handler = handler;	// Set the function pointer our handler.
+	//action.sa_flags = 0;          // Use no special flags.
+	sigfillset(&action.sa_mask);	// Again, full set of signals blocked while this
+                                   	// handler runs
+	struct itimerval timer;			// creating the struck for the timer
+	/*
+	setting up the timer
+	*/
 	timer.it_value.tv_usec = 1000000/HZ;
 	timer.it_value.tv_sec = 1;
 	timer.it_interval = timer.it_value; 
