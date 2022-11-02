@@ -23,7 +23,7 @@ sem_t sem_create(size_t count)
 	sem->count = count;
 	sem->blocked = queue_create();
 
-	c++;
+
 	return sem; 
 
 }
