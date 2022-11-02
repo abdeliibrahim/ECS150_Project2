@@ -15,7 +15,7 @@
 #define READY 0
 #define RUNNING 1
 #define WAITING 2
-#define Block 3
+#define BLOCK 3
 #define DONE 4
 
 // our ready queue for the threads 
@@ -49,7 +49,7 @@ void uthread_yield(void)
 	// getting the current thread
 	struct uthread_tcb* cur = uthread_current();
 	// check if the current thread is not block so we can put it back in the queue
-	if(cur->state != Block){
+	if(cur->state != BLOCK){
 	cur->state = WAITING;
 	queue_enqueue(thread_q, cur);
 	}	
@@ -160,7 +160,7 @@ void uthread_block(void)
 	gets the current thread and blocks it from running 
 	*/
 	struct uthread_tcb* cur = uthread_current();	
-	cur->state = Block;
+	cur->state = BLOCK;
 	uthread_yield();
 
 }
