@@ -31,7 +31,7 @@ void preempt_disable(void)
 	if(pr){				// checking if preempt is enabled
 	sigemptyset(&temp); // Start with an empty set of signals.
   	sigaddset(&temp, SIGALRM); // Add the SIGALRM signal to the set.
-	sigprocmask(SIG_BLOCK, &sigset, NULL);	// examines the signals
+	sigprocmask(SIG_BLOCK, &temp, NULL);	// examines the signals
 	}
 }
 
@@ -48,7 +48,7 @@ void preempt_enable(void)
 	if(pr){ // checking if preempt is enabled
 	sigemptyset(&temp); // Start with an empty set of signals.
   	sigaddset(&temp, SIGALRM); // Add the SIGALRM signal to the set.
-	sigprocmask(SIG_UNBLOCK, &sigset, NULL); // examines the signals
+	sigprocmask(SIG_UNBLOCK, &temp, NULL); // examines the signals
 	}
 }
 
@@ -82,6 +82,19 @@ void preempt_start(bool preempt)
 
 void preempt_stop(void)
 {
-	/* TODO Phase 4 */
+	struct sigaction action2;		// Allocate struct on stack.
+	action2.sa_handler = handler;	// Set the function pointer our handler.
+	//action.sa_flags = 0;          // Use no special flags.
+	sigfillset(&action2.sa_mask);	// Again, full set of signals blocked while this
+                                   	// handler runs
+	struct itimerval timer;			// creating the struck for the timer
+	/*
+	setting up the timer
+	*/
+	timer.it_value.tv_usec = 0;
+	timer.it_value.tv_sec = 0;
+	timer.it_interval = timer.it_value; 
+
+
 }
 
