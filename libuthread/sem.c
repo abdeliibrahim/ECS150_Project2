@@ -22,7 +22,7 @@ sem_t sem_create(size_t count)
 	struct semaphore* sem = malloc(sizeof(struct semaphore));
 	sem->count = count;
 	sem->blocked = queue_create();
-	sem->counter = c;
+
 	c++;
 	return sem; 
 
