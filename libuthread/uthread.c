@@ -114,6 +114,7 @@ int uthread_run (bool preempt, uthread_func_t func, void *arg)
 	else{
 		uthread_create(func, arg);
 	}
+	
 	if(preempt)
 		preempt_enable();
 	

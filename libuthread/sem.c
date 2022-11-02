@@ -45,12 +45,15 @@ int sem_down(sem_t sem)
 		return -1;
 
 	// enqueue the current into the queue if count =< 0
-	if(sem->count <= 0){
+	if(sem->count == 0 || sem->count < 0){
 		struct uthread_tcb* thread = uthread_current();
 		queue_enqueue(sem->blocked, thread);
 		uthread_block();
 	}
+	else{
 	sem->count--;
+	}
+	
 	
 	return 0;
 
@@ -68,6 +71,10 @@ int sem_up(sem_t sem)
 		queue_dequeue(sem->blocked, (void**)&ptr);
 		uthread_unblock(ptr);
 	}
+	else{
 	sem->count++;
+	}
+	
+	
 	return 0;
 }

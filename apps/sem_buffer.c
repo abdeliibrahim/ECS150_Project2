@@ -33,7 +33,7 @@ static void consumer(void* arg)
 	size_t out = 0;
 
 	while (out < t->maxcount - 1) {
-		size_t i, n = rand_r(&t->cons_seed) % BUFFER_SIZE + 1;
+		size_t i, n = randr(&t->cons_seed) % BUFFER_SIZE + 1;
 
 		n = clamp(n, t->maxcount - out - 1);
 		printf("Consumer wants to get %zu items out of buffer...\n", n);
