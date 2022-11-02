@@ -58,12 +58,10 @@ int queue_enqueue(queue_t queue, void *data)
 	return 0;
 }
 
-int queue_dequeue(queue_t queue, void **data) // ptr= null 
+int queue_dequeue(queue_t queue, void **data) 
 {
 	if (queue == NULL || data == NULL)
 		return -1;
-	if (queue->count == 0)
-		return 0;
 	
 	struct node *decapitated = NULL;
 	decapitated = queue->head;
