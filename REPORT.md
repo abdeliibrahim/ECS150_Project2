@@ -79,4 +79,17 @@ increment the count.
 
 ## Phase 4 - Preemption
 
+To enable preemption, we need to simulate an interrupt system as would exist in
+a truly preempted thread. For this to work properly, we set up an alarm that
+ticks 100 times per second, calling a handler function that yields the current
+thread running, replicating a concurrent system.
+
+Enabling preemption works by unblocking the signal that handles the alarm.
+Disabling does the opposite in a similar fashion.
+
+The actual alarm is configured in the preempt_start function, where the ticks
+and initial time is set. A handler that triggers thread_yield is called with
+every tick. Stopping preemption simply resets the signal to its default settings
+along with the timer.
+
 00000000000000000000000000000000000000000000000000000000000000000000000000000000
