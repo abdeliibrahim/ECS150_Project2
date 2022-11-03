@@ -52,6 +52,20 @@ For threading, we use a struct for our thread control block, containing a contex
 state integer, dedicated stack, thread ID, and the TCB of the next thread in the
 queue. We also globally declare a "current" thread control block.
 
-To create a thread
+thread_create simply initializes the struct and enqueues the thread to our
+thread queue. From here, we decided to implement uthread_yield before
+uthread_run, since it will be used multiple times throughout the rest of the
+library. Yielding was quite simple, as it consists entirely of state changes and
+queue manipulation in order to make the next threads in the queue our running
+threads. We decided to loop through the queue in our uthread_run function instead
+of our uthread_yield function, which is why it wont be found in uthread_yield.
+
+Our uthread_run function sets up an "idealThread" which acts as our "main"
+function/thread, then creates a new thread separate from our ideal thread.
+
+Exiting a thread dequeues the first thread, setting its state to "done",
+the next thread to "running", and makes this next thread the current thread.
+Finally, contexts are switched.
+
 
 00000000000000000000000000000000000000000000000000000000000000000000000000000000
