@@ -11,6 +11,8 @@
 
 
 bool pr; 
+struct itimerval Globe_timer;
+struct sigaction Globe_action;	
 /*
  * Frequency of preemption
  * 100Hz is 100 times per second
@@ -65,10 +67,9 @@ void preempt_start(bool preempt)
 	pr = preempt;
 	if(preempt){
 	struct sigaction action;		
-	action.sa_handler = handler;	
-	//action.sa_flags = 0;          
+	action.sa_handler = handler;	        
 	sigfillset(&action.sa_mask);	
-                                   	
+    sigaction(SIGVTALRM, &action, &Globe_action);                            	
 	struct itimerval timer;			
 	/*
 	setting up the timer
@@ -76,6 +77,7 @@ void preempt_start(bool preempt)
 	timer.it_value.tv_usec = 1000000/HZ;
 	timer.it_value.tv_sec = 1;
 	timer.it_interval = timer.it_value; 
+	setitimer(SIGVTALRM,&timer, &Globe_timer);
 	}
 
 }
@@ -84,9 +86,9 @@ void preempt_stop(void)
 {
 	struct sigaction action2;		
 	action2.sa_handler = handler;	
-	//action.sa_flags = 0;          
+   
 	sigfillset(&action2.sa_mask);	
-                                   	
+    sigaction(SIGVTALRM, &action2, &Globe_timer);                              	
 	struct itimerval timer;			
 	/*
 	setting up the timer
@@ -97,4 +99,3 @@ void preempt_stop(void)
 
 
 }
-
