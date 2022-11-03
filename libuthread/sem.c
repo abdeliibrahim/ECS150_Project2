@@ -84,9 +84,9 @@ int sem_up(sem_t sem)
 		uthread_unblock(ptr);
 	}
 	else{
-	// other wise we increment the count
-	sem->count++;
+		sem->count++;
 	}
+	
 	
 	return 0;
 }

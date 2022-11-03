@@ -60,42 +60,32 @@ void handler(int temp){
 }
 /*
 The following code is inspired by this resource:
-https://www.cs.bham.ac.uk/~exr/lectures/opsys/13_14/examples/signals/timer_signals.c
+https://www.gnu.org/software/libc/manual/html_mono/libc.html#Setting-an-Alarm
 */
 void preempt_start(bool preempt)
 {
 	pr = preempt;
 	if(preempt){
-	struct sigaction action;		
-	action.sa_handler = handler;	        
-	sigfillset(&action.sa_mask);	
-    sigaction(SIGVTALRM, &action, &Globe_action);                            	
-	struct itimerval timer;			
-	/*
-	setting up the timer
-	*/
-	timer.it_value.tv_usec = 1000000/HZ;
+	// creating a signal handler struct
+	struct sigaction action;
+	// sending the segnals to specific function
+	action.sa_handler = handler;
+	sigemptyset (&action.sa_mask);
+	// setting up the actions
+	sigaction(SIGVTALRM, &action, &Globe_action);  
+
+	struct itimerval timer;
+	timer.it_value.tv_usec = 10000000/HZ;
 	timer.it_value.tv_sec = 1;
 	timer.it_interval = timer.it_value; 
-	setitimer(SIGVTALRM,&timer, &Globe_timer);
+	setitimer (ITIMER_REAL, &timer, &Globe_action);
+
 	}
 
 }
 
 void preempt_stop(void)
 {
-	struct sigaction action2;		
-	action2.sa_handler = handler;	
-   
-	sigfillset(&action2.sa_mask);	
-    sigaction(SIGVTALRM, &action2, &Globe_timer);                              	
-	struct itimerval timer;			
-	/*
-	setting up the timer
-	*/
-	timer.it_value.tv_usec = 0;
-	timer.it_value.tv_sec = 0;
-	timer.it_interval = timer.it_value; 
 
 
 }
