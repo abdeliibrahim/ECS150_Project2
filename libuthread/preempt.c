@@ -76,9 +76,11 @@ void preempt_start(bool preempt)
 
 	struct itimerval timer;
 	timer.it_value.tv_usec = 10000000/HZ;
-	timer.it_value.tv_sec = 1;
+	timer.it_value.tv_sec = 0;
+	timer.it_interval.tv_usec = 10000000/HZ;
+	timer.it_interval.tv_sec = 0;
 	timer.it_interval = timer.it_value; 
-	setitimer (ITIMER_REAL, &timer, &Globe_action);
+	setitimer (ITIMER_REAL, &timer, &Globe_timer);
 
 	}
 
@@ -86,6 +88,7 @@ void preempt_start(bool preempt)
 
 void preempt_stop(void)
 {
-
+	sigaction(SIGVTALRM, &Globe_action, NULL); 
+	setitimer (ITIMER_REAL, &Globe_timer, NULL);
 
 }
