@@ -57,19 +57,19 @@ void handler(int temp){
 	uthread_yield();
 }
 /*
-The following code is inspired by this resource provided by the TA:
+The following code is inspired by this resource:
 https://www.cs.bham.ac.uk/~exr/lectures/opsys/13_14/examples/signals/timer_signals.c
 */
 void preempt_start(bool preempt)
 {
 	pr = preempt;
 	if(preempt){
-	struct sigaction action;		// Allocate struct on stack.
-	action.sa_handler = handler;	// Set the function pointer our handler.
-	//action.sa_flags = 0;          // Use no special flags.
-	sigfillset(&action.sa_mask);	// Again, full set of signals blocked while this
-                                   	// handler runs
-	struct itimerval timer;			// creating the struck for the timer
+	struct sigaction action;		
+	action.sa_handler = handler;	
+	//action.sa_flags = 0;          
+	sigfillset(&action.sa_mask);	
+                                   	
+	struct itimerval timer;			
 	/*
 	setting up the timer
 	*/
@@ -82,12 +82,12 @@ void preempt_start(bool preempt)
 
 void preempt_stop(void)
 {
-	struct sigaction action2;		// Allocate struct on stack.
-	action2.sa_handler = handler;	// Set the function pointer our handler.
-	//action.sa_flags = 0;          // Use no special flags.
-	sigfillset(&action2.sa_mask);	// Again, full set of signals blocked while this
-                                   	// handler runs
-	struct itimerval timer;			// creating the struck for the timer
+	struct sigaction action2;		
+	action2.sa_handler = handler;	
+	//action.sa_flags = 0;          
+	sigfillset(&action2.sa_mask);	
+                                   	
+	struct itimerval timer;			
 	/*
 	setting up the timer
 	*/
