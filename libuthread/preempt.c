@@ -74,6 +74,7 @@ void preempt_start(bool preempt)
 	// setting up the actions
 	sigaction(SIGVTALRM, &action, &Globe_action);  
 
+
 	struct itimerval timer;
 	timer.it_value.tv_usec = 10000000/HZ;
 	timer.it_value.tv_sec = 0;

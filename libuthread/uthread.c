@@ -43,7 +43,8 @@ struct uthread_tcb *uthread_current(void)
 
 void uthread_yield(void)
 {
-
+	// disabling the interupts 
+	preempt_disable();
 	if (queue_length(thread_q) == 0)
 		return;
 	// getting the current thread
@@ -62,12 +63,15 @@ void uthread_yield(void)
 	current = next;
 	// context switching between threads
 	uthread_ctx_switch(cur->ctx, next->ctx);
+	// unabling the interupts
+	preempt_enable();
 	}
 
 }
 
 void uthread_exit(void)
 {
+	preempt_disable();
 	// allocating memmory for the next thread 
 	struct uthread_tcb* next = malloc(sizeof(struct uthread_tcb));
 	// tgetting the current thread
@@ -80,6 +84,7 @@ void uthread_exit(void)
 	current = next;
 	// context switching between threads
 	uthread_ctx_switch(cur->ctx, next->ctx);
+	preempt_enable();
 }
 
 int uthread_create(uthread_func_t func, void *arg)
@@ -102,7 +107,6 @@ int uthread_create(uthread_func_t func, void *arg)
 	}
 	// enqueuing the the thread into our ready queue
 	queue_enqueue(thread_q, newThread);
-	//preempt_enable();
 	return succ;
 
 	
@@ -123,6 +127,7 @@ int uthread_run (bool preempt, uthread_func_t func, void *arg)
 	following 7 lines creates the ideal thread and intializes the required
 	component of the thread and set the current thread to ideal thread
 	*/
+	preempt_disable();
 	struct uthread_tcb* idealThread = malloc(sizeof(struct uthread_tcb));
 	idealThread->stack = uthread_ctx_alloc_stack();
 	idealThread->state = RUNNING;
@@ -130,6 +135,7 @@ int uthread_run (bool preempt, uthread_func_t func, void *arg)
 	tid++;
 	idealThread->ctx = malloc(sizeof(uthread_ctx_t));
 	current = idealThread;
+	preempt_enable();
 	// create the first thread, aside from the ideal thread
 	uthread_create(func, arg);
 
@@ -139,17 +145,19 @@ int uthread_run (bool preempt, uthread_func_t func, void *arg)
 		uthread_create(func, arg);
 	}
 	
-	
 	/*
 	loop runs untul the thread queue is not empty and calling the yield fucntion
 	every iteration 
 	*/
+	if(preempt)
+		preempt_start(preempt);
 	while(1){
 		
 		if(queue_length(thread_q) == 0)
 			break;
 		uthread_yield();
 	}
+	preempt_stop();
 	return 0;
 }
 
